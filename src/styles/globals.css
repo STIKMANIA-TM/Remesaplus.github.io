@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --neon: #00FF00;
+  --dark-green: #006600;
+  --bg: #003300;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Modo Ahorro de Datos */
+body[data-saver="true"] {
+  --neon: #00CC00;
+  background: #000 !important;
+}
+body[data-saver="true"] * {
+  animation: none !important;
+  transition: none !important;
+  box-shadow: none !important;
+}
+
+.btn-primary {
+  @apply bg-[#00FF00] text-black font-bold py-3 px-4 rounded-lg min-h-[48px] min-w-[48px] active:scale-95 transition-transform;
+}
+
+.input-field {
+  @apply w-full bg-black border border-[#006600] rounded-lg p-3 text-white focus:outline-none focus:border-[#00FF00];
+}
