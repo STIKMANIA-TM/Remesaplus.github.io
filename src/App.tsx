@@ -12,12 +12,30 @@ import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import { AppstoreOutlined } from "@mui/icons-material";
 
 // ============================================
+// IMPORTACIÓN DE PÁGINAS REALES
+// ============================================
+import { CanalesList } from "./pages/canales/list";
+import { CanalesCreate } from "./pages/canales/create";
+import { CanalesEdit } from "./pages/canales/edit";
+import { TasasList } from "./pages/tasas/list";
+import { RemesasList } from "./pages/remesas/list";
+import { RemesasCreate } from "./pages/remesas/create";
+import { RemesasEdit } from "./pages/remesas/edit";
+
+// ============================================
 // CONFIGURACIÓN DE SUPABASE
 // ============================================
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error("Faltan variables de Supabase en .env");
+}
+
+const supabaseClient = createClient(
+  SUPABASE_URL || "",
+  SUPABASE_ANON_KEY || ""
+);
 
 // ============================================
 // TEMA STIKMANIA (Verde Neón + Negro)
@@ -69,7 +87,7 @@ const theme = createTheme({
 });
 
 // ============================================
-// LAYOUT PERSONALIZADO
+// LAYOUT PERSONALIZADO CON IDENTIDAD STIKMANIA
 // ============================================
 const Layout = () => (
   <ThemedLayoutV2
@@ -87,36 +105,35 @@ const Layout = () => (
 );
 
 // ============================================
-// PÁGINAS BÁSICAS (Placeholder)
+// PÁGINA DE INICIO (PÚBLICA)
 // ============================================
 const HomePage = () => (
-  <div style={{ padding: 24 }}>
-    <h1 style={{ color: "#00FF00" }}>Bienvenido a Remesa+</h1>
-    <p>Comparador y trazador de remesas para Cuba</p>
-    <p style={{ marginTop: 16, color: "#006600" }}>
-      Usa el menú lateral para navegar entre Canales, Tasas y Remesas.
+  <div style={{ padding: 24, textAlign: "center" }}>
+    <h1 style={{ color: "#00FF00", fontSize: 32, marginBottom: 16 }}>
+      💸 Remesa+
+    </h1>
+    <p style={{ fontSize: 18, marginBottom: 24 }}>
+      Comparador y trazador de remesas para Cuba
     </p>
-  </div>
-);
-
-const CanalesList = () => (
-  <div style={{ padding: 24 }}>
-    <h2 style={{ color: "#00FF00" }}>Canales de Remesa</h2>
-    <p>Aquí irá la tabla comparativa de canales (Western Union, EnZona, etc.)</p>
-  </div>
-);
-
-const TasasList = () => (
-  <div style={{ padding: 24 }}>
-    <h2 style={{ color: "#00FF00" }}>Histórico de Tasas</h2>
-    <p>Aquí irá el comparador de tasas USD/CUP en tiempo real.</p>
-  </div>
-);
-
-const RemesasList = () => (
-  <div style={{ padding: 24 }}>
-    <h2 style={{ color: "#00FF00" }}>Mis Remesas</h2>
-    <p>Aquí irá el trazador de remesas con estados en tiempo real.</p>
+    <p style={{ color: "#006600", marginBottom: 32 }}>
+      La primera plataforma cubana que convierte tu remesa en historial crediticio.
+    </p>
+    <a
+      href="/canales"
+      style={{
+        display: "inline-block",
+        backgroundColor: "#00FF00",
+        color: "#000000",
+        padding: "12px 32px",
+        borderRadius: 8,
+        fontWeight: 700,
+        textDecoration: "none",
+        minHeight: 48,
+        lineHeight: "24px",
+      }}
+    >
+      Ver Comparador de Tasas
+    </a>
   </div>
 );
 
@@ -151,6 +168,7 @@ function App() {
                 name: "remesas",
                 list: "/remesas",
                 create: "/remesas/create",
+                edit: "/remesas/edit/:id",
                 meta: { label: "Remesas", icon: <AppstoreOutlined /> },
               },
             ]}
@@ -174,17 +192,32 @@ function App() {
               {/* Rutas protegidas: Dashboard */}
               <Route
                 element={
-                  <Authenticated fallback={<NavigateToResource resource="canales" />}>
+                  <Authenticated
+                    key="authenticated-inner"
+                    fallback={<NavigateToResource resource="canales" />}
+                  >
                     <Layout>
                       <Outlet />
                     </Layout>
                   </Authenticated>
                 }
               >
+                {/* Canales */}
                 <Route path="/canales" element={<CanalesList />} />
+                <Route path="/canales/create" element={<CanalesCreate />} />
+                <Route path="/canales/edit/:id" element={<CanalesEdit />} />
+                
+                {/* Tasas */}
                 <Route path="/tasas" element={<TasasList />} />
+                
+                {/* Remesas */}
                 <Route path="/remesas" element={<RemesasList />} />
+                <Route path="/remesas/create" element={<RemesasCreate />} />
+                <Route path="/remesas/edit/:id" element={<RemesasEdit />} />
               </Route>
+
+              {/* Catch-all: redirige al home */}
+              <Route path="*" element={<NavigateToResource />} />
             </Routes>
             <UnsavedChangesNotifier />
           </Refine>
