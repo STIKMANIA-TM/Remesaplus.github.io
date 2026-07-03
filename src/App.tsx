@@ -6,7 +6,7 @@ import routerBindings, {
 } from "@refinedev/react-router-v6";
 import { dataProvider, liveProvider, authProvider } from "./providers";
 import { createClient } from "@supabase/supabase-js";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import { HashRouter, Outlet, Route, Routes } from "react-router-dom";
 import { ThemedLayoutV2 } from "@refinedev/mui";
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import { AppstoreOutlined } from "@mui/icons-material";
@@ -44,14 +44,14 @@ const theme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#00FF00", // Verde neón
+      main: "#00FF00",
     },
     secondary: {
-      main: "#006600", // Verde oscuro
+      main: "#006600",
     },
     background: {
-      default: "#000000", // Negro puro
-      paper: "#003300", // Verde muy oscuro para tarjetas
+      default: "#000000",
+      paper: "#003300",
     },
     text: {
       primary: "#FFFFFF",
@@ -119,7 +119,7 @@ const HomePage = () => (
       La primera plataforma cubana que convierte tu remesa en historial crediticio.
     </p>
     <a
-      href="/canales"
+      href="#/canales"
       style={{
         display: "inline-block",
         backgroundColor: "#00FF00",
@@ -142,7 +142,7 @@ const HomePage = () => (
 // ============================================
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <RefineKbarProvider>
@@ -224,7 +224,7 @@ function App() {
           <RefineKbar />
         </RefineKbarProvider>
       </ThemeProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
